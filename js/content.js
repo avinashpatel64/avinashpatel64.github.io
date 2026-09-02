@@ -154,13 +154,47 @@ window.SITE_CONTENT = {
   /* ---------- CONTACT PAGE ---------- */
   contact: {
     title: "Contact",
-    intro: "The quickest way to reach me is email. I read everything, and reply to most things within a few days.",
+    eyebrow: "Get in touch",
+    intro: "Whether you're shaping a product direction, hiring for a design role, or just want another set of eyes on something — I'm happy to talk.",
+
+    /* Quick links shown as pills under the intro */
+    links: [
+      { label: "Résumé",   href: "[[resume.pdf]]" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/[[your-linkedin-handle]]" },
+      { label: "Email",    href: "mailto:[[your@email.com]]" }
+    ],
+
     methods: [
       { label: "Email",    value: "[[your@email.com]]", href: "mailto:[[your@email.com]]" },
-      { label: "LinkedIn", value: "linkedin.com/in/[[your-linkedin-handle]]", href: "https://www.linkedin.com/in/[[your-linkedin-handle]]" },
       { label: "Based in", value: "Pune, Maharashtra, India", href: "" }
     ],
-    note: "For recruiters: my résumé is linked in the top navigation."
+    note: "For recruiters: my résumé is linked in the top navigation.",
+
+    /* --------------------------------------------------------
+       CONTACT FORM
+       Leave endpoint empty and the form is hidden — the page
+       falls back to the links above, which always work.
+
+       Web3Forms (free, no account needed):
+         1. web3forms.com -> enter your email -> they send you a key
+         2. endpoint:  https://api.web3forms.com/submit
+         3. accessKey: paste the key they emailed
+
+       Formspree (free, 50/month, needs an account):
+         1. formspree.io -> New form -> copy the endpoint
+         2. endpoint:  https://formspree.io/f/YOURFORMID
+         3. accessKey: leave empty
+       -------------------------------------------------------- */
+    form: {
+      endpoint:  "",
+      accessKey: "",
+      subject:   "New message from your portfolio site",
+      heading:   "Send a message",
+      buttonLabel: "Send message",
+      sendingLabel: "Sending…",
+      successMessage: "Thanks — your message is on its way. I'll reply to the email address you gave.",
+      errorMessage: "That didn't send. Please email me directly instead."
+    }
   },
 
   /* ============================================================
