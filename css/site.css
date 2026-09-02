@@ -95,7 +95,7 @@ img { max-width: 100%; display: block; height: auto; }
 .btn:hover { text-decoration: none; }
 .btn--primary { background: var(--c-accent); color: #fff; }
 .btn--primary:hover { background: var(--c-accent-hover); color: #fff; }
-.btn--ghost { border-color: var(--c-line-strong); color: var(--c-ink); background: transparent; }
+.btn--ghost { border-color: var(--c-border-ui); color: var(--c-ink); background: transparent; }
 .btn--ghost:hover { border-color: var(--c-ink); color: var(--c-ink); background: var(--c-surface); }
 .btn-row { display: flex; flex-wrap: wrap; gap: var(--s-3); }
 
@@ -146,7 +146,7 @@ img { max-width: 100%; display: block; height: auto; }
 
 .nav-toggle {
   display: none; margin-left: auto;
-  background: transparent; border: 1px solid var(--c-line-strong);
+  background: transparent; border: 1px solid var(--c-border-ui);
   border-radius: var(--radius-sm); padding: 9px 11px; cursor: pointer;
 }
 .nav-toggle span { display: block; width: 18px; height: 2px; background: var(--c-ink); }
