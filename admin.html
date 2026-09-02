@@ -7,7 +7,6 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/theme.css">
 <style>
   *,*::before,*::after{box-sizing:border-box}
@@ -114,13 +113,16 @@ try {
 var THEME = {
   "--c-bg": "#EDF1F4", "--c-surface": "#FFFFFF", "--c-surface-alt": "#E4EAEF",
   "--c-ink": "#16212B", "--c-ink-soft": "#4A5761", "--c-ink-faint": "#5C6871",
-  "--c-accent": "#1D5F6B", "--c-accent-hover": "#144750", "--c-accent-tint": "#DDEAEC",
+  "--c-accent": "#4C6B8A", "--c-accent-hover": "#38536F", "--c-accent-tint": "#D5E2EF",
   "--c-line": "#D5DDE3", "--c-line-strong": "#B9C4CC", "--c-border-ui": "#7C848A", "--c-focus": "#C2551F"
 };
 var THEME_TEXT = {
+  fontImport: "https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&family=Inter:wght@400;500&display=swap",
+  fontTitle: "'Instrument Serif', Georgia, 'Times New Roman', serif",
   fontDisplay: "'Instrument Sans', 'Helvetica Neue', Arial, sans-serif",
   fontBody: "'Inter', 'Helvetica Neue', Arial, sans-serif",
-  wPage: "1160px", wNarrow: "700px", radius: "12px", radiusLg: "20px"
+  wPage: "1160px", wNarrow: "700px", radius: "12px", radiusLg: "20px",
+  radiusBtn: "8px", radiusChip: "999px"
 };
 try {
   var th = localStorage.getItem(DRAFT_KEY + "_theme");
@@ -402,13 +404,41 @@ views.about = function () {
 };
 
 views.contact = function () {
+  var on = (get("contact.form.endpoint") || "").trim() !== "";
   return "<h2>Contact</h2>" +
     "<fieldset><legend>Page</legend>" +
-      F("contact.title", "Title") + FA("contact.intro", "Intro") + FA("contact.note", "Small note at the bottom") +
+      F("contact.eyebrow", "Small line above the title") +
+      F("contact.title", "Title") + FA("contact.intro", "Intro") +
+      FA("contact.note", "Small note at the bottom") +
     "</fieldset>" +
+    List("contact.links", "Quick link pills", [["label","Label"],["href","Link target"]],
+      { label: "New link", href: "#" }, { noun: "pill" }) +
     List("contact.methods", "Ways to reach you",
       [["label","Label"],["value","Shown text"],["href","Link (optional)","mailto:… or https://…"]],
-      { label: "Label", value: "", href: "" }, { noun: "method" });
+      { label: "Label", value: "", href: "" }, { noun: "method" }) +
+
+    '<div class="note"><strong>Contact form — ' + (on ? "ON" : "OFF") + "</strong>" +
+      "<p style=\"margin:8px 0 0\">GitHub Pages can't send email by itself, so the form posts to a free relay " +
+      "that forwards messages to your inbox. Leave the endpoint empty and the form is hidden — the page still " +
+      "shows your links, which always work.</p>" +
+      "<p style=\"margin:8px 0 0\"><strong>Web3Forms</strong> (free, no account): go to web3forms.com, enter " +
+      "your email, they send you an access key. Endpoint is <code>https://api.web3forms.com/submit</code> " +
+      "and paste the key below.</p>" +
+      "<p style=\"margin:8px 0 0\"><strong>Formspree</strong> (free, 50/month, needs an account): create a form, " +
+      "paste its endpoint, leave the access key empty.</p></div>" +
+
+    "<fieldset><legend>Contact form</legend>" +
+      F("contact.form.endpoint", "Endpoint URL", "Empty = form hidden") +
+      F("contact.form.accessKey", "Access key", "Web3Forms only. Leave empty for Formspree.") +
+      '<div class="cols2">' +
+        F("contact.form.heading", "Form heading") +
+        F("contact.form.subject", "Email subject line") +
+        F("contact.form.buttonLabel", "Button label") +
+        F("contact.form.sendingLabel", "Button label while sending") +
+      "</div>" +
+      FA("contact.form.successMessage", "Message shown after sending") +
+      FA("contact.form.errorMessage", "Message shown if sending fails") +
+    "</fieldset>";
 };
 
 var openPage = 0;
@@ -475,14 +505,21 @@ views.theme = function () {
       '<input type="text" data-themetext="' + k + '" value="' + esc(THEME[k]) + '"></span></label>';
   });
   out += "</fieldset><fieldset><legend>Type &amp; layout</legend>" +
+    '<label class="fld"><span>Google Fonts URL</span><input type="text" data-tt="fontImport" value="' + esc(THEME_TEXT.fontImport) + '">' +
+      "<em>Pick families on fonts.google.com, copy the URL from inside their &lt;link&gt;, paste it here. This is the only place fonts are loaded.</em></label>" +
+    '<label class="fld"><span>Page title font stack (serif)</span><input type="text" data-tt="fontTitle" value="' + esc(THEME_TEXT.fontTitle) + '">' +
+      "<em>Used for the big h1 on every page. Instrument Serif has one weight only.</em></label>" +
     '<label class="fld"><span>Heading font stack</span><input type="text" data-tt="fontDisplay" value="' + esc(THEME_TEXT.fontDisplay) + '">' +
-      "<em>If you change the family, also update the Google Fonts link at the top of each .html file.</em></label>" +
+      "</label>" +
     '<label class="fld"><span>Body font stack</span><input type="text" data-tt="fontBody" value="' + esc(THEME_TEXT.fontBody) + '"></label>' +
     '<div class="cols2">' +
       '<label class="fld"><span>Max page width</span><input type="text" data-tt="wPage" value="' + esc(THEME_TEXT.wPage) + '"></label>' +
       '<label class="fld"><span>Max reading width</span><input type="text" data-tt="wNarrow" value="' + esc(THEME_TEXT.wNarrow) + '"></label>' +
-      '<label class="fld"><span>Corner radius</span><input type="text" data-tt="radius" value="' + esc(THEME_TEXT.radius) + '"></label>' +
-      '<label class="fld"><span>Large corner radius</span><input type="text" data-tt="radiusLg" value="' + esc(THEME_TEXT.radiusLg) + '"></label>' +
+      '<label class="fld"><span>Button radius</span><input type="text" data-tt="radiusBtn" value="' + esc(THEME_TEXT.radiusBtn) + '"></label>' +
+      '<label class="fld"><span>Tag / chip radius</span><input type="text" data-tt="radiusChip" value="' + esc(THEME_TEXT.radiusChip) + '">' +
+        "<em>999px makes them pill-shaped.</em></label>" +
+      '<label class="fld"><span>Card radius</span><input type="text" data-tt="radius" value="' + esc(THEME_TEXT.radius) + '"></label>' +
+      '<label class="fld"><span>Large card radius</span><input type="text" data-tt="radiusLg" value="' + esc(THEME_TEXT.radiusLg) + '"></label>' +
     "</div></fieldset>" +
     '<div class="row-actions"><button class="b pri" id="dlTheme">Download theme.css</button>' +
     '<button class="b" id="resetTheme">Reset colours</button></div>';
@@ -537,6 +574,9 @@ function themeCss() {
   var lines = [
     "/* THEME.CSS — generated from admin.html. Edit here or in admin. */",
     "",
+    "/* Fonts load here, so this stays the only file you edit. */",
+    "@import url('" + THEME_TEXT.fontImport + "');",
+    "",
     ":root {",
     "",
     "  /* colours */"
@@ -544,19 +584,23 @@ function themeCss() {
   Object.keys(THEME).forEach(function (k) { lines.push("  " + k + ": " + THEME[k] + ";"); });
   lines.push("",
     "  /* type */",
+    "  --font-title:   " + THEME_TEXT.fontTitle + ";",
     "  --font-display: " + THEME_TEXT.fontDisplay + ";",
     "  --font-body:    " + THEME_TEXT.fontBody + ";",
-    "  --fs-hero:  clamp(2.4rem, 6.2vw, 4.05rem);",
-    "  --fs-h1:    clamp(2.05rem, 5vw, 3.05rem);",
+    "  --fs-title: clamp(3.4rem, 11vw, 8.75rem);",
+    "  --fs-hero:  clamp(2.7rem, 7vw, 5rem);",
+    "  --fs-h1:    var(--fs-title);",
     "  --fs-h2:    clamp(1.6rem, 3.4vw, 2.15rem);",
     "  --fs-h3:    clamp(1.16rem, 2.2vw, 1.4rem);",
     "  --fs-lead:  clamp(1.03rem, 1.8vw, 1.2rem);",
     "  --fs-body:  1rem;",
     "  --fs-small: 0.875rem;",
     "  --fs-micro: 0.775rem;",
+    "  --lh-title: 0.9;",
     "  --lh-tight: 1.08;",
     "  --lh-snug:  1.32;",
     "  --lh-body:  1.62;",
+    "  --tracking-title: -0.02em;",
     "  --tracking-tight: -0.022em;",
     "  --tracking-wide:   0.07em;",
     "",
@@ -570,10 +614,11 @@ function themeCss() {
     "  --w-page:   " + THEME_TEXT.wPage + ";",
     "  --w-narrow: " + THEME_TEXT.wNarrow + ";",
     "  --w-wide:   1320px;",
-    "  --radius-sm:  6px;",
-    "  --radius:     " + THEME_TEXT.radius + ";",
-    "  --radius-lg:  " + THEME_TEXT.radiusLg + ";",
-    "  --radius-pill: 999px;",
+    "  --radius-btn:  " + THEME_TEXT.radiusBtn + ";",
+    "  --radius-chip: " + THEME_TEXT.radiusChip + ";",
+    "  --radius-sm:   6px;",
+    "  --radius:      " + THEME_TEXT.radius + ";",
+    "  --radius-lg:   " + THEME_TEXT.radiusLg + ";",
     "  --shadow-card: 0 1px 2px rgba(22,33,43,.05);",
     "  --shadow-lift: 0 10px 30px -12px rgba(22,33,43,.22);",
     "  --header-h: 68px;",
@@ -702,7 +747,7 @@ document.addEventListener("click", function (e) {
     case "resetTheme":
       THEME = { "--c-bg":"#EDF1F4","--c-surface":"#FFFFFF","--c-surface-alt":"#E4EAEF",
         "--c-ink":"#16212B","--c-ink-soft":"#4A5761","--c-ink-faint":"#5C6871",
-        "--c-accent":"#1D5F6B","--c-accent-hover":"#144750","--c-accent-tint":"#DDEAEC",
+        "--c-accent":"#4C6B8A","--c-accent-hover":"#38536F","--c-accent-tint":"#D5E2EF",
         "--c-line":"#D5DDE3","--c-line-strong":"#B9C4CC","--c-border-ui":"#7C848A","--c-focus":"#C2551F" };
       saveDraft(true); render(); toast("Colours reset"); break;
     case "resetAll":
