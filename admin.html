@@ -38,7 +38,7 @@
   label.fld > span{display:block;font-size:12px;font-weight:500;color:var(--c-ink-soft);margin-bottom:5px}
   label.fld > em{display:block;font-size:11px;color:var(--c-ink-faint);font-style:normal;margin-top:4px}
   input[type=text],input[type=url],input[type=email],textarea,select{
-    width:100%;padding:9px 11px;border:1px solid var(--c-line-strong);border-radius:8px;
+    width:100%;padding:9px 11px;border:1px solid var(--c-border-ui);border-radius:8px;
     font:inherit;font-size:14px;background:var(--c-bg);color:var(--c-ink)}
   textarea{min-height:88px;resize:vertical;line-height:1.5}
   input:focus,textarea:focus,select:focus{outline:2px solid var(--c-accent);outline-offset:1px;border-color:transparent}
@@ -113,9 +113,9 @@ try {
 
 var THEME = {
   "--c-bg": "#EDF1F4", "--c-surface": "#FFFFFF", "--c-surface-alt": "#E4EAEF",
-  "--c-ink": "#16212B", "--c-ink-soft": "#56646F", "--c-ink-faint": "#8B98A2",
+  "--c-ink": "#16212B", "--c-ink-soft": "#4A5761", "--c-ink-faint": "#5C6871",
   "--c-accent": "#1D5F6B", "--c-accent-hover": "#144750", "--c-accent-tint": "#DDEAEC",
-  "--c-line": "#D5DDE3", "--c-line-strong": "#B9C4CC", "--c-focus": "#C2551F"
+  "--c-line": "#D5DDE3", "--c-line-strong": "#B9C4CC", "--c-border-ui": "#7C848A", "--c-focus": "#C2551F"
 };
 var THEME_TEXT = {
   fontDisplay: "'Instrument Sans', 'Helvetica Neue', Arial, sans-serif",
@@ -464,7 +464,7 @@ views.theme = function () {
     "--c-bg": "Page background", "--c-surface": "Cards & panels", "--c-surface-alt": "Alternating band",
     "--c-ink": "Headings", "--c-ink-soft": "Body text", "--c-ink-faint": "Captions & meta",
     "--c-accent": "Accent (links, buttons)", "--c-accent-hover": "Accent hover", "--c-accent-tint": "Accent tint (tags)",
-    "--c-line": "Borders", "--c-line-strong": "Strong borders", "--c-focus": "Keyboard focus ring"
+    "--c-line": "Borders", "--c-line-strong": "Chip outlines", "--c-border-ui": "Button & input borders", "--c-focus": "Keyboard focus ring"
   };
   var out = "<h2>Theme &amp; colours</h2>" +
     '<p class="hint">Changes preview live on this page. Download theme.css when you are happy and replace the file in your repo.</p>' +
@@ -701,9 +701,9 @@ document.addEventListener("click", function (e) {
       break;
     case "resetTheme":
       THEME = { "--c-bg":"#EDF1F4","--c-surface":"#FFFFFF","--c-surface-alt":"#E4EAEF",
-        "--c-ink":"#16212B","--c-ink-soft":"#56646F","--c-ink-faint":"#8B98A2",
+        "--c-ink":"#16212B","--c-ink-soft":"#4A5761","--c-ink-faint":"#5C6871",
         "--c-accent":"#1D5F6B","--c-accent-hover":"#144750","--c-accent-tint":"#DDEAEC",
-        "--c-line":"#D5DDE3","--c-line-strong":"#B9C4CC","--c-focus":"#C2551F" };
+        "--c-line":"#D5DDE3","--c-line-strong":"#B9C4CC","--c-border-ui":"#7C848A","--c-focus":"#C2551F" };
       saveDraft(true); render(); toast("Colours reset"); break;
     case "resetAll":
       if (!confirm("Discard every edit and go back to the published content.js?")) return;
