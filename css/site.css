@@ -38,6 +38,9 @@ h1 {
   font-size: var(--fs-h1);
   line-height: var(--lh-title);
   letter-spacing: var(--tracking-title);
+  /* a long unbroken word can never push the page sideways */
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 h2 { font-size: var(--fs-h2); }
 h3 { font-size: var(--fs-h3); line-height: var(--lh-snug); }
