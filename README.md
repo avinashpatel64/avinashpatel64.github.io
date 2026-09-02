@@ -1,3 +1,4 @@
+[README.md](https://github.com/user-attachments/files/31731838/README.md)
 # Portfolio site
 
 A static site. No build step, no framework, no dependencies. Drop the files
@@ -14,7 +15,9 @@ contact.html    Contact
 page.html       Any extra page        → page.html?id=writing
 admin.html      The editor (see below)
 
-css/theme.css   ← ALL colours, fonts, spacing, widths. Edit this to restyle.
+css/theme.css   ← EVERYTHING visual: fonts (and the @import),
+                  colours, type scale, spacing, widths, radius.
+                  Six numbered sections with a map at the top.
 css/site.css    Layout and components. Uses only theme.css variables.
 
 js/content.js   ← ALL words, links and image paths. Edit this to change content.
@@ -84,11 +87,35 @@ blocks in any order:
 Placeholders are written as `[[like this]]` — search for `[[` to find
 everything still waiting to be filled in.
 
+## Common CSS edits
+
+All in `css/theme.css`. The header comment lists which section each
+lives in.
+
+| Want to change | Edit |
+|---|---|
+| Button shape | `--radius-btn` |
+| Tag / chip shape | `--radius-chip` (999px = pill) |
+| Accent colour | `--c-accent` (+ `--c-accent-hover`, `--c-accent-tint`) |
+| Page background | `--c-bg` |
+| Content width | `--w-page` |
+| Page title size | `--fs-title` |
+| Gap between sections | `--section-y` |
+
+If you change a text colour, check it against its background at
+webaim.org/resources/contrastchecker — text needs 4.5, borders 3.0.
+`--c-accent` also carries white button text, so it can't go too pale.
+
 ## Changing the fonts
 
-Set the two font stacks in admin's Theme tab, then update the Google Fonts
-`<link>` near the top of each `.html` file to match. That's the one edit
-admin can't do for you.
+All in `css/theme.css` (or admin's Theme tab):
+
+1. Pick families on fonts.google.com and copy the URL from inside their
+   `<link>` tag.
+2. Paste it into the `@import url(...)` line at the top of `theme.css`.
+3. Update `--font-title`, `--font-display` and `--font-body` to match.
+
+Nothing else needs touching. The `.html` files never reference fonts.
 
 ## Accessibility notes already handled
 
