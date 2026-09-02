@@ -34,11 +34,11 @@
    their <link> tag, paste it below, then update the three
    stacks to match. Nothing else needs touching.
    ----------------------------------------------------------- */
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&family=Inter:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Inter:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400..600&display=swap');
 
 :root {
 
-  --font-title:   'Instrument Serif', Georgia, 'Times New Roman', serif;  /* big page titles  */
+  --font-title:   'Source Serif 4', Georgia, 'Times New Roman', serif;    /* big page titles  */
   --font-display: 'Instrument Sans', 'Helvetica Neue', Arial, sans-serif; /* headings, labels */
   --font-body:    'Inter', 'Helvetica Neue', Arial, sans-serif;           /* paragraphs       */
 
@@ -72,8 +72,10 @@
 
   /* Page titles are serif. Two sizes, because a one-word title
      and a full sentence don't behave the same at 140px. */
-  --fs-title:   clamp(3.4rem, 11vw, 8.75rem);   /* Contact, Work, About   */
-  --fs-hero:    clamp(2.7rem, 7vw, 5rem);       /* sentences, case titles */
+  /* Fluid all the way down — the middle value mixes rem and vw so the
+     size keeps changing at every width instead of sticking at a floor. */
+  --fs-title:   clamp(2.25rem, 1.5rem + 6.5vw, 8.75rem);  /* Contact, Work, About   */
+  --fs-hero:    clamp(2rem, 1.2rem + 4vw, 4.75rem);       /* sentences, case titles */
   --fs-h1:      var(--fs-title);
 
   --fs-h2:      clamp(1.6rem, 3.4vw, 2.15rem);  /* section headings */
@@ -83,12 +85,12 @@
   --fs-small:   0.875rem;
   --fs-micro:   0.8125rem;                       /* eyebrows        */
 
-  --lh-title:   0.9;      /* serif titles, tight on purpose */
+  --lh-title:   1.0;      /* text serif needs more room than a display serif */
   --lh-tight:   1.08;     /* sans headings                  */
   --lh-snug:    1.32;
   --lh-body:    1.62;
 
-  --tracking-title: -0.02em;
+  --tracking-title: -0.012em;
   --tracking-tight: -0.022em;
   --tracking-wide:   0.07em;
 
