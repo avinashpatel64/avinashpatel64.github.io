@@ -264,7 +264,8 @@
   };
 
   render.contact = function () {
-    var c = C.contact || {};
+    var c = C.contact || {}, f = c.form || {};
+
     var rows = (c.methods || []).map(function (m) {
       var v = has(m.href)
         ? "<a href=\"" + esc(m.href) + "\">" + esc(m.value) + "</a>"
@@ -272,13 +273,110 @@
       return "<li><div class=\"timeline__when\">" + esc(m.label) + "</div><div>" + v + "</div></li>";
     }).join("");
 
-    return '<section class="section"><div class="wrap-n">' +
+    var pills = (c.links || []).map(function (l) {
+      return '<a class="pill" href="' + esc(l.href) + '">' + esc(l.label) + "</a>";
+    }).join("");
+
+    var left = "<div>" +
+      (has(c.eyebrow) ? '<p class="eyebrow">' + esc(c.eyebrow) + "</p>" : "") +
       "<h1>" + esc(c.title || "Contact") + "</h1>" +
-      '<p class="lead" style="margin-bottom:var(--s-7)">' + esc(c.intro) + "</p>" +
-      '<ul class="timeline">' + rows + "</ul>" +
-      (has(c.note) ? '<p style="margin-top:var(--s-6);font-size:var(--fs-small);color:var(--c-ink-faint)">' + esc(c.note) + "</p>" : "") +
-      "</div></section>";
+      '<p class="lead">' + esc(c.intro) + "</p>" +
+      (pills ? '<div class="pills">' + pills + "</div>" : "") +
+      (rows ? '<ul class="timeline" style="margin-top:var(--s-7)">' + rows + "</ul>" : "") +
+      (has(c.note) ? '<p class="contact-note">' + esc(c.note) + "</p>" : "") +
+      "</div>";
+
+    /* No endpoint configured → links only, never a form that silently fails. */
+    if (!has(f.endpoint)) {
+      return '<section class="section"><div class="wrap"><div class="contact-grid">' +
+        left + "</div></div></section>";
+    }
+
+    var form = '<div class="form-card"><h2 class="form-card__title">' +
+      esc(f.heading || "Send a message") + "</h2>" +
+      '<form id="contactForm" novalidate>' +
+        '<div class="field"><label for="cfName">Name</label>' +
+          '<input id="cfName" name="name" type="text" autocomplete="name" required></div>' +
+        '<div class="field"><label for="cfEmail">Email</label>' +
+          '<input id="cfEmail" name="email" type="email" autocomplete="email" required>' +
+          '<p class="field__hint">So I can reply.</p></div>' +
+        '<div class="field"><label for="cfMsg">Message</label>' +
+          '<textarea id="cfMsg" name="message" rows="6" required></textarea></div>' +
+        '<div class="field field--trap" aria-hidden="true">' +
+          '<label for="cfSite">Leave this empty</label>' +
+          '<input id="cfSite" name="botcheck" type="text" tabindex="-1" autocomplete="off"></div>' +
+        '<button class="btn btn--primary btn--block" type="submit" id="cfSubmit">' +
+          esc(f.buttonLabel || "Send message") + "</button>" +
+        '<p class="form-status" id="cfStatus" role="status" aria-live="polite"></p>' +
+      "</form></div>";
+
+    return '<section class="section"><div class="wrap"><div class="contact-grid">' +
+      left + form + "</div></div></section>";
   };
+
+  /* Submits without leaving the page. Works with Web3Forms and Formspree. */
+  function wireContactForm() {
+    var form = el("contactForm");
+    if (!form) return;
+    var f = (C.contact && C.contact.form) || {};
+    var label = el("cfSubmit").textContent;
+
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      /* looked up per submit, so a re-render never leaves us writing to a detached node */
+      var btn = el("cfSubmit"), status = el("cfStatus");
+      if (!btn || !status) return;
+      status.className = "form-status";
+
+      var fName = el("cfName"), fEmail = el("cfEmail"), fMsg = el("cfMsg");
+      var name = fName.value.trim();
+      var email = fEmail.value.trim();
+      var message = fMsg.value.trim();
+
+      if (!name || !email || !message) {
+        status.className = "form-status is-error";
+        status.textContent = "Please fill in your name, email and message.";
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        status.className = "form-status is-error";
+        status.textContent = "That email address doesn't look right.";
+        fEmail.focus();
+        return;
+      }
+      if (el("cfSite").value) return;   /* honeypot: silently drop bots */
+
+      var payload = { name: name, email: email, message: message,
+                      subject: f.subject || "New message from your portfolio site" };
+      if (has(f.accessKey)) payload.access_key = f.accessKey;
+
+      btn.disabled = true;
+      btn.textContent = f.sendingLabel || "Sending…";
+
+      fetch(f.endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(function (r) {
+        return r.json().catch(function () { return { ok: r.ok }; });
+      }).then(function (data) {
+        var ok = data.success === true || data.ok === true || !data.errors;
+        if (!ok) throw new Error("rejected");
+        form.reset();
+        status.className = "form-status is-ok";
+        status.textContent = f.successMessage || "Thanks — your message is on its way.";
+      }).catch(function () {
+        status.className = "form-status is-error";
+        status.innerHTML = esc(f.errorMessage || "That didn't send.") +
+          (C.site && has(C.site.email)
+            ? ' <a href="mailto:' + esc(C.site.email) + '">' + esc(C.site.email) + "</a>"
+            : "");
+      }).then(function () {
+        btn.disabled = false;
+        btn.textContent = label;
+      });
+    });
+  }
 
   render.caseStudy = function () {
     var id = qs("id");
@@ -357,6 +455,7 @@
 
     if (head) head.innerHTML = header();
     if (main && render[page]) main.innerHTML = render[page]();
+    if (page === "contact") wireContactForm();
     if (foot) foot.innerHTML = footer();
 
     if (PREVIEW) {
