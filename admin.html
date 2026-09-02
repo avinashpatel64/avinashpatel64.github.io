@@ -117,8 +117,8 @@ var THEME = {
   "--c-line": "#D5DDE3", "--c-line-strong": "#B9C4CC", "--c-border-ui": "#7C848A", "--c-focus": "#C2551F"
 };
 var THEME_TEXT = {
-  fontImport: "https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&family=Inter:wght@400;500&display=swap",
-  fontTitle: "'Instrument Serif', Georgia, 'Times New Roman', serif",
+  fontImport: "https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Inter:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400..600&display=swap",
+  fontTitle: "'Source Serif 4', Georgia, 'Times New Roman', serif",
   fontDisplay: "'Instrument Sans', 'Helvetica Neue', Arial, sans-serif",
   fontBody: "'Inter', 'Helvetica Neue', Arial, sans-serif",
   wPage: "1160px", wNarrow: "700px", radius: "12px", radiusLg: "20px",
@@ -508,7 +508,7 @@ views.theme = function () {
     '<label class="fld"><span>Google Fonts URL</span><input type="text" data-tt="fontImport" value="' + esc(THEME_TEXT.fontImport) + '">' +
       "<em>Pick families on fonts.google.com, copy the URL from inside their &lt;link&gt;, paste it here. This is the only place fonts are loaded.</em></label>" +
     '<label class="fld"><span>Page title font stack (serif)</span><input type="text" data-tt="fontTitle" value="' + esc(THEME_TEXT.fontTitle) + '">' +
-      "<em>Used for the big h1 on every page. Instrument Serif has one weight only.</em></label>" +
+      "<em>Used for the big h1 on every page.</em></label>" +
     '<label class="fld"><span>Heading font stack</span><input type="text" data-tt="fontDisplay" value="' + esc(THEME_TEXT.fontDisplay) + '">' +
       "</label>" +
     '<label class="fld"><span>Body font stack</span><input type="text" data-tt="fontBody" value="' + esc(THEME_TEXT.fontBody) + '"></label>' +
@@ -587,8 +587,8 @@ function themeCss() {
     "  --font-title:   " + THEME_TEXT.fontTitle + ";",
     "  --font-display: " + THEME_TEXT.fontDisplay + ";",
     "  --font-body:    " + THEME_TEXT.fontBody + ";",
-    "  --fs-title: clamp(3.4rem, 11vw, 8.75rem);",
-    "  --fs-hero:  clamp(2.7rem, 7vw, 5rem);",
+    "  --fs-title: clamp(2.25rem, 1.5rem + 6.5vw, 8.75rem);",
+    "  --fs-hero:  clamp(2rem, 1.2rem + 4vw, 4.75rem);",
     "  --fs-h1:    var(--fs-title);",
     "  --fs-h2:    clamp(1.6rem, 3.4vw, 2.15rem);",
     "  --fs-h3:    clamp(1.16rem, 2.2vw, 1.4rem);",
@@ -596,11 +596,11 @@ function themeCss() {
     "  --fs-body:  1rem;",
     "  --fs-small: 0.875rem;",
     "  --fs-micro: 0.775rem;",
-    "  --lh-title: 0.9;",
+    "  --lh-title: 1.0;",
     "  --lh-tight: 1.08;",
     "  --lh-snug:  1.32;",
     "  --lh-body:  1.62;",
-    "  --tracking-title: -0.02em;",
+    "  --tracking-title: -0.012em;",
     "  --tracking-tight: -0.022em;",
     "  --tracking-wide:   0.07em;",
     "",
