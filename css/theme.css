@@ -39,7 +39,7 @@
 :root {
 
   --font-title:   'Source Serif 4', Georgia, 'Times New Roman', serif;    /* big page titles  */
-  --font-display: 'Instrument Sans', 'Helvetica Neue', Arial, sans-serif; /* headings, labels */
+  --font-display: 'Source Serif 4', 'Helvetica Neue', Arial, sans-serif; /* headings, labels */
   --font-body:    'Inter', 'Helvetica Neue', Arial, sans-serif;           /* paragraphs       */
 
 
