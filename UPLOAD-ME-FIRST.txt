@@ -1,0 +1,47 @@
+HOW TO UPLOAD THIS TO GITHUB
+============================
+
+IMPORTANT: upload the FILES INSIDE this folder, not the folder itself.
+If you drag the whole folder in, your site ends up at /portfolio-site/
+instead of the homepage.
+
+1. github.com -> New repository
+     - Public
+     - DO NOT tick "Add a README file"
+     - Create
+
+2. On the empty repo page: "uploading an existing file"
+   (or Add file -> Upload files)
+
+3. Open this folder, select everything inside it:
+
+     404.html      about.html    admin.html    case.html
+     contact.html  index.html    page.html     work.html
+     css/          images/       js/
+     README.md     netlify.toml  .nojekyll
+
+   Drag all of it into the browser.
+
+   Note: .nojekyll starts with a dot, so it may be hidden.
+     Mac      - press Cmd + Shift + . in Finder to show it
+     Windows  - View -> Show -> Hidden items
+   If it will not upload, that is fine. It is only a safeguard.
+
+4. Scroll down, "Commit directly to the main branch", Commit changes.
+
+5. Settings -> Pages -> Source: Deploy from a branch
+     Branch: main    Folder: / (root)    Save
+
+6. Wait 1-2 minutes, refresh. Your live link appears at the top.
+
+That is it. Every future commit republishes automatically.
+
+TO EDIT THE SITE LATER
+   Open admin.html -> make changes -> Download content.js
+   -> GitHub -> js folder -> content.js -> pencil icon
+   -> select all, paste the new file, commit.
+
+STILL TO FILL IN
+   Search for [[  in js/content.js - every placeholder is marked that way.
+   Needed: email, LinkedIn URL, resume PDF, portrait photo,
+   case study details and any real numbers.
