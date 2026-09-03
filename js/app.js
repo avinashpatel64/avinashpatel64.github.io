@@ -59,6 +59,12 @@
   function header() {
     var s = C.site || {};
     var here = fileName();
+
+    /* A case study belongs to Work, so keep Work marked while reading one —
+       otherwise the nav goes blank and you lose your place. Extra pages match
+       on their query string, since they all share page.html. */
+    if (here === "case.html") here = "work.html";
+    else if (here === "page.html") here = "page.html" + location.search;
     var mark = has(s.logoImage)
       ? '<span class="brand__mark"><img src="' + esc(s.logoImage) + '" alt=""></span>'
       : '<span class="brand__mark" aria-hidden="true">' + esc(s.initials || "") + "</span>";
@@ -121,7 +127,7 @@
           "<h3><a href=\"" + href + "\">" + esc(c.title) + "</a></h3>" +
           "<p>" + esc(c.summary) + "</p>" +
           tags(c.tags) +
-          (linked === false ? "" : '<a class="case-card__link" href="' + href + '">Read case study →</a>') +
+          (linked === false ? "" : '<a class="case-card__link" href="' + href + '">Read case study</a>') +
         "</div></article>";
     }).join("");
   }
@@ -448,6 +454,55 @@
       body + "</div></section>";
   };
 
+  /* ---------- motion ----------
+     Everything here is opt-in: if the visitor prefers reduced motion,
+     or IntersectionObserver is missing, we never add the `motion`
+     class and the CSS above stays inert. Content is visible either way. */
+  function initMotion() {
+    var reduce = window.matchMedia &&
+                 window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce || !("IntersectionObserver" in window)) return;
+
+    document.documentElement.classList.add("motion");
+
+    var sel = ".hero__grid > *, .fact, .section-head, .case-card, " +
+              ".timeline li, .block, .cta, .form-card, .chips, .linklist, .pills";
+    var items = Array.prototype.slice.call(document.querySelectorAll(sel));
+
+    /* stagger siblings a little, but never enough to feel slow */
+    var lastParent = null, i = 0;
+    items.forEach(function (elm) {
+      if (elm.parentNode !== lastParent) { lastParent = elm.parentNode; i = 0; }
+      elm.classList.add("reveal");
+      elm.style.setProperty("--reveal-delay", Math.min(i, 4) * 70 + "ms");
+      i++;
+    });
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add("is-in");
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.05 });
+
+    items.forEach(function (elm) { io.observe(elm); });
+
+    /* header weight on scroll */
+    var header = document.querySelector(".site-header");
+    if (header) {
+      var tick = false;
+      window.addEventListener("scroll", function () {
+        if (tick) return;
+        tick = true;
+        window.requestAnimationFrame(function () {
+          header.classList.toggle("is-scrolled", window.scrollY > 8);
+          tick = false;
+        });
+      }, { passive: true });
+    }
+  }
+
   /* ---------- boot ---------- */
   document.addEventListener("DOMContentLoaded", function () {
     var page = document.body.getAttribute("data-page");
@@ -456,6 +511,7 @@
     if (head) head.innerHTML = header();
     if (main && render[page]) main.innerHTML = render[page]();
     if (page === "contact") wireContactForm();
+    initMotion();
     if (foot) foot.innerHTML = footer();
 
     if (PREVIEW) {
