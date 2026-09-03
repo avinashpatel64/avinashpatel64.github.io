@@ -30,11 +30,14 @@ h1, h2, h3, h4 {
   font-weight: 600;
 }
 
-/* Page titles use --font-title. That family ships a single weight (400),
-   so never set a heavier one here — browsers would fake-bold it. */
+/* Page titles use --font-title, --fw-title and --fs-title-style, all set in
+   theme.css. Only the weights named in the @import there are actually loaded —
+   asking for another makes the browser fake it, which looks smeared. Change
+   the import and these tokens together. */
 h1 {
   font-family: var(--font-title);
-  font-weight: 400;
+  font-weight: var(--fw-title);
+  font-style: var(--fs-title-style);
   font-size: var(--fs-h1);
   line-height: var(--lh-title);
   letter-spacing: var(--tracking-title);
@@ -148,11 +151,25 @@ img { max-width: 100%; display: block; height: auto; }
 .nav { margin-left: auto; display: flex; align-items: center; gap: var(--s-5); }
 .nav__links { display: flex; gap: var(--s-5); list-style: none; margin: 0; padding: 0; }
 .nav__links a {
+  position: relative;
   font-family: var(--font-display); font-size: var(--fs-small);
   color: var(--c-ink-soft); padding-block: var(--s-2);
+  transition: color .2s ease;
 }
 .nav__links a:hover { color: var(--c-ink); text-decoration: none; }
-.nav__links a[aria-current="page"] { color: var(--c-ink); box-shadow: inset 0 -2px 0 var(--c-accent); }
+
+/* Underline grows from the left on hover, and sits full-width on the page
+   you're currently on — the same indicator does hover feedback and
+   "you are here", so one teaches the other. */
+.nav__links a::after {
+  content: ""; position: absolute; left: 0; bottom: 0;
+  height: 2px; width: 0; background: var(--c-accent);
+  transition: width .25s cubic-bezier(.2,.7,.2,1);
+}
+.nav__links a:hover::after,
+.nav__links a:focus-visible::after { width: 100%; }
+.nav__links a[aria-current="page"] { color: var(--c-ink); }
+.nav__links a[aria-current="page"]::after { width: 100%; }
 .nav__aside { display: flex; gap: var(--s-2); }
 .nav__aside .btn { padding: var(--s-2) var(--s-4); }
 
@@ -176,6 +193,8 @@ img { max-width: 100%; display: block; height: auto; }
   .nav.is-open { display: flex; }
   .nav__links { flex-direction: column; gap: 0; }
   .nav__links a { display: block; padding: var(--s-3) 0; border-bottom: 1px solid var(--c-line); font-size: 1rem; }
+  .nav__links a::after { display: none; }
+  .nav__links a[aria-current="page"] { color: var(--c-accent); }
   .nav__aside { margin-top: var(--s-4); }
 }
 
@@ -261,6 +280,9 @@ img { max-width: 100%; display: block; height: auto; }
   border-top: 1px solid var(--c-line);
 }
 .timeline li:last-child { border-bottom: 1px solid var(--c-line); }
+/* A section-head already draws a rule underneath it, so the first row
+   must not draw its own — otherwise you get two lines with a gap. */
+.section-head + .timeline > li:first-child { border-top: 0; }
 .timeline__when { font-size: var(--fs-small); color: var(--c-ink-faint); font-family: var(--font-display); }
 .timeline__role { font-family: var(--font-display); font-weight: 600; color: var(--c-ink); font-size: 1.03rem; }
 .timeline__org { font-size: var(--fs-small); margin-bottom: var(--s-2); }
@@ -341,7 +363,8 @@ img { max-width: 100%; display: block; height: auto; }
 }
 .cta h2 {
   color: #fff; max-width: 18ch;
-  font-family: var(--font-title); font-weight: 400;
+  font-family: var(--font-title);
+  font-weight: var(--fw-title); font-style: var(--fs-title-style);
   font-size: var(--fs-hero); line-height: var(--lh-title);
   letter-spacing: var(--tracking-title);
 }
@@ -425,3 +448,50 @@ img { max-width: 100%; display: block; height: auto; }
 .form-status { margin: var(--s-4) 0 0; font-size: var(--fs-small); min-height: 1.2em; }
 .form-status.is-ok    { color: var(--c-accent); }
 .form-status.is-error { color: #96331A; }
+
+
+/* ============================================================
+   MOTION
+   The `motion` class is added by JS only when the visitor has not
+   asked for reduced motion. Without JS, or with reduced motion on,
+   everything below is inert and all content stays visible.
+   ============================================================ */
+
+html.motion .reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .55s cubic-bezier(.2,.7,.2,1),
+              transform .55s cubic-bezier(.2,.7,.2,1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+html.motion .reveal.is-in { opacity: 1; transform: none; }
+
+.site-header { transition: border-color .3s ease, box-shadow .3s ease; }
+.site-header.is-scrolled { box-shadow: 0 1px 12px -6px rgba(22,33,43,.28); }
+
+.case-card {
+  transition: transform .35s cubic-bezier(.2,.7,.2,1),
+              box-shadow .35s ease, border-color .35s ease;
+}
+.case-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); border-color: var(--c-line-strong); }
+.case-card__media img { transition: transform .7s cubic-bezier(.2,.7,.2,1); }
+.case-card:hover .case-card__media img { transform: scale(1.035); }
+
+/* the arrow steps forward on its own; the label stays put */
+.case-card__link::after {
+  content: "→"; display: inline-block;
+  margin-left: var(--s-2);
+  transition: margin-left .25s cubic-bezier(.2,.7,.2,1);
+}
+.case-card__link:hover::after { margin-left: var(--s-4); }
+
+.btn { transition: background .18s ease, color .18s ease,
+                   border-color .18s ease, transform .18s ease; }
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.pill { transition: background .18s ease, border-color .18s ease,
+                    color .18s ease, transform .18s ease; }
+.pill:hover { transform: translateY(-1px); }
+
+.tag { transition: background .3s ease; }
+.case-card:hover .tag { background: var(--c-accent-tint); }
