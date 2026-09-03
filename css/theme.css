@@ -34,12 +34,14 @@
    their <link> tag, paste it below, then update the three
    stacks to match. Nothing else needs touching.
    ----------------------------------------------------------- */
-@import url('https://fonts.google.com/specimen/Source+Serif+4?query=serif');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&family=Inter:wght@400;500&display=swap');
 
 :root {
 
-  --font-title:   'Source Serif 4', Georgia, 'Times New Roman', serif;    /* big page titles  */
-  --font-display: 'Source Serif 4', 'Helvetica Neue', Arial, sans-serif; /* headings, labels */
+  --font-title:   'Playfair Display', Georgia, serif;                     /* big page titles  */
+  --fw-title:     400;      /* only weights named in the @import are loaded */
+  --fs-title-style: normal; /* normal or italic                             */
+  --font-display: 'Instrument Sans', 'Helvetica Neue', Arial, sans-serif; /* headings, labels */
   --font-body:    'Inter', 'Helvetica Neue', Arial, sans-serif;           /* paragraphs       */
 
 
@@ -76,7 +78,9 @@
      size keeps changing at every width instead of sticking at a floor. */
   --fs-title:   clamp(2.25rem, 1.5rem + 6.5vw, 8.75rem);  /* Contact, Work, About   */
   --fs-hero:    clamp(2rem, 1.2rem + 4vw, 4.75rem);       /* sentences, case titles */
-  --fs-h1:      var(--fs-title);
+  /* Page titles (Work, About, Contact) match the home headline.
+     Set this to var(--fs-title) instead if you want them larger. */
+  --fs-h1:      var(--fs-hero);
 
   --fs-h2:      clamp(1.6rem, 3.4vw, 2.15rem);  /* section headings */
   --fs-h3:      clamp(1.16rem, 2.2vw, 1.4rem);  /* card titles      */
@@ -85,7 +89,7 @@
   --fs-small:   0.875rem;
   --fs-micro:   0.8125rem;                       /* eyebrows        */
 
-  --lh-title:   1.0;      /* text serif needs more room than a display serif */
+  --lh-title:   1.04;     /* Playfair has tall ascenders and deep descenders */
   --lh-tight:   1.08;     /* sans headings                  */
   --lh-snug:    1.32;
   --lh-body:    1.62;
